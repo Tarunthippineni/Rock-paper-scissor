@@ -1,1 +1,37 @@
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# Image dimensions (assuming 28x28 pixels)
+img_rows, img_cols = 28, 28
+
+# Load your preprocessed training data (replace with your data)
+X_train = ...  # Array of training images
+y_train = ...  # Array of training labels (0 for Rock, 1 for Paper, 2 for Scissors)
+
+# Normalize pixel values
+X_train = X_train.astype('float32') / 255.0
+
+# One-hot encode labels (if not already encoded)
+y_train = keras.utils.to_categorical(y_train, num_classes=3)
+
+# Create the model
+model = keras.Sequential([
+    layers.Flatten(input_shape=(img_rows, img_cols)),  # Flatten input images
+    layers.Dense(512, activation='relu'),  # First hidden layer with ReLU activation
+    layers.Dropout(0.2),  # Dropout layer to prevent overfitting
+    layers.Dense(256, activation='relu'),  # Second hidden layer with ReLU activation
+    layers.Dropout(0.2),  # Dropout layer to prevent overfitting
+    layers.Dense(3, activation='softmax')  # Output layer with softmax activation for 3 classes
+])
+
+# Compile the model
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model on your data
+model.fit(X_train, y_train, epochs=10, batch_size=32)  # Adjust epochs and batch size
+
+# Save the model for future use (optional)
+model.save('rps_model.h5')
 
